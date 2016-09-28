@@ -1,0 +1,1 @@
+Run exe.sh on linux which has installed openmp and MPI. As I run it on [Tianhe-2](http://www.nscc-gz.cn/index.html), use 'yrun' command to run it. You may choose proper command.
