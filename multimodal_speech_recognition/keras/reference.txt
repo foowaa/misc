@@ -1,0 +1,1 @@
+http://stats.stackexchange.com/questions/192014/how-to-implement-a-lstm-based-classifier-to-classify-speech-files-using-keras
