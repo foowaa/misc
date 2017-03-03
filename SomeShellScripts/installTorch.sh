@@ -528,13 +528,11 @@ luarocks install qtlua
 luarocks install qttorch
 echo 'use zbstudio to start this IDE'
 sleep 3s
-echo "ALL DOWN"
-
-
 
 
 ###############################################
-
+#INSTALL SOME USEFUL PACKAGES
+###############################################
 luarocks install nngraph
 luarocks install hdf5
 luarocks install csvigo
@@ -543,3 +541,5 @@ git clone https://github.com/twitter/torch-autograd
 cd ./torch-autograd
 luarocks make
 luarocks install cudnn
+
+echo "ALL DOWN"
