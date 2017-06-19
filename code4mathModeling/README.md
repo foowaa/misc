@@ -6,4 +6,4 @@
 5. Used R packages: psych, reshape2
                                                           
 														  
-														  ------By cltian, 2016/9/18
+		                                         -By cltian, 2016/9/18
