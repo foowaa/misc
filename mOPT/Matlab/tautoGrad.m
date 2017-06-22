@@ -21,7 +21,7 @@ if type == 1 % Use Finite Differencing
 		e_j(j) = 1;
 		diff(j,1) = funObj(x + mu*e_j,varargin{:});
 	end
-	g = (diff-repmat(f,p,1))fix/mu;
+	g = (diff-repmat(f,p,1))/mu;
 
 else % Use Central Differencing
 	mu = 2*sqrt(1e-12)*(1+norm(x));
