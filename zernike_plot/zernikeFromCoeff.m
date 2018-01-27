@@ -1,32 +1,81 @@
-function zernikeFromCoeff(coef, c, k, titleSag, titleSurf)
-% coef: Code V 求出的参数；c:曲面顶点处的曲率；k:圆锥曲面系数；titleSag：平面图的标题；titleSurf：三维图的标题
+function zernikeFromCoeff(coef, c, k, type, titleSag, titleSurf)
+% coef: Code V
+% 求出的参数；c:曲面顶点处的曲率；k:圆锥曲面系数；titleSag：平面图的标题；titleSurf：三维图的标题；type：一般zernike或XY
+% zernike
 % example:
 % coef = [3.608, -0.00519, 0.89, -0.00050];
 % c = 0.001994;
 % k = -5.6933;
 % titleSag = 'sag';
 % titleSurf = 'surf';
-% zernikeFromCoeff(coef, c, k, titleSag, titleSurf);
+% zernikeFromCoeff(coef, c, k, 0, titleSag, titleSurf);
 coef = [1.0,coef];
 len = length(coef);
 %nm = [0,0; 1,-1; 1,1; 2,-2; 2,0; 2,2; 3,-3; 3,-1; 3,1; 3,3; 4,-4; 4,-2; 4,0; 4,2; 4,4];
 nm = [0,0; 1,1; 1,-1; 2,2; 2,0; 2,-2; 3,3; 3,1; 3,-1; 3,-3; 4,4; 4,2; 4,0; 4,-2; 4,-4];
+xy = cell(15,1);
+xy{1,1} = [1,1];
+xy{2,1} = [2,1];
+xy{3,1} = [3,1];
+xy{4,1} = [1,4;4,2;5,4];
+xy{5,1} = [6,2];
+xy{6,1} = [1,4;4,-2;5,4];
+xy{7,1} = [2,2;7,4;8,4];
+xy{8,1} = [10,4;3,6;9,12];
+xy{9,1} = [2,6;7,-4;8,12];
+xy{10,1} = [3,2;10,-4;9,4];
+xy{11,1} = [1,8;11,8;12,8;13,16;4,2.667;5,5.333];
+xy{12,1} = [14,16;15,8;6,5.333];
+xy{13,1} = [1,24;11,-8;13,48;5,16];
+xy{14,1} = [14,16;15,-8;6,5.333];
+xy{15,1} = [1,8;11,8;12,-8;13,16;4,-2.667;5,5.333];
+
 if len>length(nm)
     error('the coef is too long!');
 end
 
-x = -1:0.01:1;
-[X,Y] = meshgrid(x,x);
-[theta,r] = cart2pol(X,Y);
-idx = r<=1;
-z = cell(len,1);
-for i=1:len
-    z{i} = nan(size(X));
-    z{i}(idx) = zernfun(nm(i,1),nm(i,2),r(idx),theta(idx))*coef(i);
+if type==0
+    x = -1:0.01:1;
+    [X,Y] = meshgrid(x,x);
+    [theta,r] = cart2pol(X,Y);
+    idx = r<=1;
+    % z = cell(len,1);
+    z = calcZer(X, idx, len, r, theta, nm);
+    for j=1:len
+        %z{j} = nan(size(X));
+        z{j}(idx) = z{j}(idx)*coef(j);
+    end
+    % for i=1:len
+    %     z{i} = nan(size(X));
+    %     z{i}(idx) = zernfun(nm(i,1),nm(i,2),r(idx),theta(idx))*coef(i);
+    % end
+else
+    x = -1:0.01:1;
+    [X,Y] = meshgrid(x,x);
+    [theta,r] = cart2pol(X,Y);
+    idx = r<=1;
+    % z = cell(len,1);
+    zz = calcZer(X, idx, 15, r, theta, nm);
+    z = cell(len,1);
+    for q=1:len
+        z{q} = nan(size(X));
+        for p = 1:size(xy{q},1)
+            if p==1
+                z{q} = zz{xy{q}(p,1)}/xy{q}(p,2);
+            else
+                z{q} = z{q}+zz{xy{q}(p,1)}/xy{q}(p,2);
+                xx=zz{xy{q}(p,1)};
+                xx1=zz{xy{q}(p,1)}/xy{q}(p,2);
+            end
+        end
+        z{q} = z{q}*coef(q);
+    end
+    
+    % for i=1:len
+    %     z{i} = nan(size(X));
+    %     z{i}(idx) = zernfun(nm(i,1),nm(i,2),r(idx),theta(idx))*coef(i);
+    % end
 end
-
-% c = 0.001994;
-% k = -5.6933;
 rr = r.^2+theta.^2;
 res = c*rr./(1+(1-(1+k)*c^2*rr).^0.5);
 for i=1:len
@@ -42,8 +91,15 @@ figure,
 surf(X, Y, res), shading interp, colormap jet;
 axis square, colorbar;
 title(titleSurf);
+end
 
-
+function z = calcZer(X, idx, len, r, theta, nm)
+z = cell(len,1);
+for j=1:len
+    z{j} = nan(size(X));
+    z{j}(idx) = zernfun(nm(j,1),nm(j,2),r(idx),theta(idx));
+end
+end
 
 
 function z = zernfun(n,m,r,theta,nflag)
@@ -238,5 +294,5 @@ end
 if any(idx_neg)
     z(:,idx_neg) = z(:,idx_neg).*sin(theta*m_abs(idx_neg)');
 end
-
+end
 % EOF zernfun
