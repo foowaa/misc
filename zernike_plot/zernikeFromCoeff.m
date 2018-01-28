@@ -1,4 +1,5 @@
 function zernikeFromCoeff(coef, c, k, type, titleSag, titleSurf)
+% 直接使用CodeV或Zemax优化得到的Zernike系数仿真镜面
 % coef: Code V
 % 求出的参数；c:曲面顶点处的曲率；k:圆锥曲面系数；titleSag：平面图的标题；titleSurf：三维图的标题；type：一般zernike或XY
 % zernike
